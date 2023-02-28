@@ -23,7 +23,7 @@ public sealed class Tokenizer<TToken>: IEnumerable<TokenSpecification<TToken>> w
             if(TryGetNextToken(ref index, s, out Token<TToken>? token)) {
                 if(token != null) tokens.Add(token);
             } else {
-                throw new UndefinedTokenException(index);
+                throw new UndefinedTokenException(index, s);
             }
         }
 

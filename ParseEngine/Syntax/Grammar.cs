@@ -34,10 +34,6 @@ public sealed class Grammar<TSymbol> : IEnumerable<Production<TSymbol>> where TS
         }
     }
 
-    internal IReadOnlySet<TSymbol> GetFirstsOf(TSymbol symbol) {
-        throw new NotImplementedException();
-    }
-
     public ParseTree<TSymbol> Parse(IReadOnlyList<Token<TSymbol>> source) {
         int tokenIndex = 0;
         ParseNode<TSymbol> node = RecursiveParse(ref tokenIndex, source, _startingSymbol);

@@ -41,7 +41,9 @@ public sealed class Grammar<TSymbol> : IEnumerable<Production<TSymbol>> where TS
     }
 
     internal ParseNode<TSymbol> RecursiveParse(ref int index, IReadOnlyList<Token<TSymbol>> source, TSymbol currentSymbol) {
+        
         throw new NotImplementedException();
+
     }
 
     IEnumerator<Production<TSymbol>> IEnumerable<Production<TSymbol>>.GetEnumerator() => 

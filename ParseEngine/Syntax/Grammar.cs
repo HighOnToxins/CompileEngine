@@ -2,6 +2,7 @@
 using ParseEngine.Scanning;
 using ParseEngine.Syntax.Expressions;
 using System.Collections;
+using System.Linq.Expressions;
 
 namespace ParseEngine.Syntax; 
 
@@ -15,13 +16,22 @@ public sealed class Grammar<TSymbol> : IEnumerable<Production<TSymbol>> where TS
         _productions = new();
     }
 
+    //TODO: Add labels later for easy rewrite.
     //TODO: Add/specify precedence and associativity. 
-    //TODO: Add combination?
-    public void Add(TSymbol symbol, ParseExpression<TSymbol> expression) =>
-        _productions.Add(symbol, new(symbol, expression));
+    public void Add(TSymbol symbol, params TSymbol[] symbols) {
+        SymbolExpression<TSymbol>[] symbolExpressions = symbols
+                .Select(s => new SymbolExpression<TSymbol>(s)).ToArray();
+        ConcatenationExpression<TSymbol> concatenation = new(symbolExpressions);
+        Add(symbol, concatenation);
+    }
 
-    public void DetermineFirsts() {
-        throw new NotImplementedException();
+    public void Add(TSymbol symbol, ParseExpression<TSymbol> expression) {
+        if(_productions.TryGetValue(symbol, out Production<TSymbol>? production)) {
+            UnionExpression<TSymbol> union = new(expression, production.Expression);
+            _productions[symbol] = new(symbol, union.Simplify());
+        } else {
+            _productions.Add(symbol, new(symbol, expression.Simplify()));
+        }
     }
 
     internal IReadOnlySet<TSymbol> GetFirstsOf(TSymbol symbol) {

@@ -6,7 +6,7 @@ namespace ParseTesting;
 
 public class GrammarTest {
 
-    private enum TokenType {
+    private enum SymbolType {
         NumberToken,
         AddToken,
         Space,
@@ -17,31 +17,30 @@ public class GrammarTest {
     [Test]
     public void CanReadSingleOperator() {
 
-        Tokenizer<TokenType> scanner = new() {
-            {TokenType.NumberToken, "[0-9]+"},
-            {TokenType.AddToken, "\\+"},
-            {TokenType.Space, "\\s+", true},
+        Tokenizer<SymbolType> scanner = new() {
+            {SymbolType.NumberToken, "[0-9]+"},
+            {SymbolType.AddToken, "\\+"},
+            {SymbolType.Space, "\\s+", true},
         };
 
-        //TODO: Add labels later for easy rewrite.
-        Grammar<TokenType> grammar = new(TokenType.ExpSymbol) {
-            { TokenType.ExpSymbol, new SymbolExpression<TokenType>()}, 
+       Grammar<SymbolType> grammar = new(SymbolType.ExpSymbol) {
+            { SymbolType.ExpSymbol, SymbolType.NumberToken, SymbolType.AddToken, SymbolType.NumberToken}, 
         };
 
         string str = "27 + 5";
 
-        IReadOnlyList<Token<TokenType>> tokens = scanner.GetTokensOf(str);
-        ParseTree<TokenType> tree = grammar.Parse(tokens);
+        IReadOnlyList<Token<SymbolType>> tokens = scanner.GetTokensOf(str);
+        ParseTree<SymbolType> tree = grammar.Parse(tokens);
 
-        Token<TokenType>[] array = new Token<TokenType>[tree.Root.Tokens.Count];
+        Token<SymbolType>[] array = new Token<SymbolType>[tree.Root.Tokens.Count];
         for(int i = 0; i < array.Length; i++) {
             array[i] = tree.Root.Tokens[i];
         }
 
-        Assert.That(array, Is.EqualTo(new Token<TokenType>[] {
-            new Token<TokenType>(TokenType.NumberToken, 0, "27"),
-            new Token<TokenType>(TokenType.AddToken, 3, "+"),
-            new Token<TokenType>(TokenType.NumberToken, 5, "27")
+        Assert.That(array, Is.EqualTo(new Token<SymbolType>[] {
+            new Token<SymbolType>(SymbolType.NumberToken, 0, "27"),
+            new Token<SymbolType>(SymbolType.AddToken, 3, "+"),
+            new Token<SymbolType>(SymbolType.NumberToken, 5, "5")
         }));
 
     }

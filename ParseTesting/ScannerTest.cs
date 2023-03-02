@@ -9,15 +9,14 @@ public class ScannerTest {
         Word,
         Special,
         Number,
-        Whitespace,
     };
 
     private static Tokenizer<Word> CreateWordScanner() {
         return new() {
-            { Word.Whitespace, "\\s+", true},
-            { Word.Word, "[a-zA-Z]+"},
-            { Word.Special, "[^0-9a-zA-Z\\s]+"},
-            { Word.Number, "[0-9]+"},
+            {"\\s+"},
+            { "[a-zA-Z]+",       Word.Word,     s => s},
+            {"[^0-9a-zA-Z\\s]+", Word.Special,  s => s},
+            {"[0-9]+",           Word.Number,   s => int.Parse(s)},
         };
     }
 

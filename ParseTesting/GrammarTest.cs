@@ -30,8 +30,9 @@ public class GrammarTest {
 
         Tokenizer<ExpToken> scanner = CreateExpScanner();
 
+        //TODO: Fix possibly null warning. (alternative than: "o[0] is int i ? i : throw new ArgumentException()")
         Grammar<ExpToken, ExpSymbol> grammar = new(ExpSymbol.Add) {
-            { ExpSymbol.Add, o => new int[]{(int)o[0], (int)o[2] }, ExpToken.Number, ExpToken.Add, ExpToken.Number},
+            { ExpSymbol.Add, o => new int[]{ (int)o[0], (int)o[2] }, ExpToken.Number, ExpToken.Add, ExpToken.Number},
         };
 
         string str = "27 + 5";

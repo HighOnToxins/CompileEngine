@@ -3,16 +3,16 @@ using System.Text.RegularExpressions;
 
 namespace ParseEngine.Scanning;
 
-public sealed class TokenSpecification<TToken> where TToken : notnull {
+public class TokenSpecification<TToken> where TToken : notnull {
 
-    private readonly TToken _category;
+    private readonly TToken? _category;
     private readonly Regex _regex;
-    private readonly bool _isIgnored;
+    protected readonly Func<string, object?> _lexemeFunction;
 
-    internal TokenSpecification(TToken category, string regex, bool isIgnored = false) {
+    internal TokenSpecification(TToken? category, string regex, Func<string, object?> lexemeFunction) {
         _category = category;
         _regex = new Regex(regex);
-        _isIgnored = isIgnored;
+        _lexemeFunction = lexemeFunction;
     }
 
     internal bool MatchAt(string s, int index, out int length, out Token<TToken>? token) {
@@ -24,7 +24,7 @@ public sealed class TokenSpecification<TToken> where TToken : notnull {
             return false;
         }
 
-        if(!_isIgnored) {
+        if(_category != null) {
             token = new Token<TToken>(_category, index, match.Value);
         }
 

@@ -1,21 +1,17 @@
 ﻿
 using ParseEngine.Scanning;
-using ParseEngine.Syntax.Expressions;
 
 namespace ParseEngine.Syntax; 
 
-public sealed class Production<TSymbol> where TSymbol : notnull {
+public sealed class Production<TToken> where TToken : notnull{
 
-    public ParseExpression<TSymbol> Expression { get; }
-    private readonly TSymbol _symbol;
-
-    public Production(TSymbol symbol, ParseExpression<TSymbol> expression) {
-        _symbol = symbol;
-        Expression = expression;
+    public Production(/*TODO: Find a way to take a format as input.*/) {
     }
 
-    public ParseNode<TSymbol> Parse(in Grammar<TSymbol> grammar, ref int index, IReadOnlyList<Token<TSymbol>> soruce) {
+    public object Parse(in Grammar<TToken> grammar, ref int index, IReadOnlyList<Token<TToken>> soruce) {
+        
         throw new NotImplementedException();
+
     } 
 
 }

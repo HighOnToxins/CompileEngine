@@ -1,3 +1,3 @@
 ﻿namespace ParseEngine.Scanning;
 
-public sealed record Token<TToken>(TToken Category, int Index, string Lexeme) where TToken : notnull;
+public sealed record Token<TToken>(TToken Category, int Index, object? Lexeme) where TToken : notnull;

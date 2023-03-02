@@ -5,7 +5,12 @@ namespace ParseEngine.Syntax;
 
 public sealed class Production<TToken> where TToken : notnull{
 
-    public Production(/*TODO: Find a way to take a format as input.*/) {
+    private readonly Func<object[], object> _instansiateFunction;
+    private readonly object[] _format;
+
+    public Production(Func<object[], object> instFunc, params object[] format) {
+        _instansiateFunction = instFunc;
+        _format = format;
     }
 
     public object Parse(in Grammar<TToken> grammar, ref int index, IReadOnlyList<Token<TToken>> soruce) {

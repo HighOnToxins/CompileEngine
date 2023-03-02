@@ -3,13 +3,13 @@ using System.Text.RegularExpressions;
 
 namespace ParseEngine.Scanning;
 
-public class TokenSpecification<TToken> where TToken : notnull {
+public sealed class TokenSpecification<TToken> where TToken : notnull {
 
     private readonly TToken? _category;
     private readonly Regex _regex;
-    protected readonly Func<string, object?> _lexemeFunction;
+    private readonly Func<string, object?>? _lexemeFunction;
 
-    internal TokenSpecification(TToken? category, string regex, Func<string, object?> lexemeFunction) {
+    internal TokenSpecification(TToken? category, string regex, Func<string, object?>? lexemeFunction) {
         _category = category;
         _regex = new Regex(regex);
         _lexemeFunction = lexemeFunction;
@@ -24,10 +24,7 @@ public class TokenSpecification<TToken> where TToken : notnull {
             return false;
         }
 
-        if(_category != null) {
-            token = new Token<TToken>(_category, index, match.Value);
-        }
-
+        token = _category == null ? null : new Token<TToken>(_category, index, _lexemeFunction?.Invoke(match.Value));
         length = match.Length;
         return true;
     }

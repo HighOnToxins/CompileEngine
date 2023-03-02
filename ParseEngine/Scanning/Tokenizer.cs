@@ -15,7 +15,7 @@ public sealed class Tokenizer<TToken>: IEnumerable<TokenSpecification<TToken>> w
     public void Add(TToken? category, string regex) =>
         _tokenSpecifications.Add(new TokenSpecification<TToken>(category, regex, s => null));
 
-    public void Add(TToken? category, string regex, Func<string, object?> lexemeFunction) =>
+    public void Add(TToken? category, string regex, Func<string, object?>? lexemeFunction) =>
         _tokenSpecifications.Add(new TokenSpecification<TToken>(category, regex, lexemeFunction));
 
     public void Add(string regex) =>

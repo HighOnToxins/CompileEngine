@@ -5,49 +5,35 @@ namespace ParseTesting;
 
 public class GrammarTest {
 
-    private enum Exp {
-        NumberToken,
-        AddToken,
+    private enum ExpToken {
+        Number,
+        Add,
+    }
+
+    private enum ExpSymbol {
+        Add,
     }
 
     [Test]
     public void CanReadSingleOperator() {
 
-        Tokenizer<Exp> scanner = new() {
-            {Exp.NumberToken, "[0-9]+", s => int.Parse(s)},
-            {Exp.AddToken, "\\+"},
+        Tokenizer<ExpToken> scanner = new() {
+            {ExpToken.Number, "[0-9]+", s => int.Parse(s)},
+            {ExpToken.Add, "\\+"},
             {"\\s+"},
         };
 
-       Grammar<Exp> grammar = new(Exp.ExpSymbol) {
-            { Exp.ExpSymbol, Exp.NumberToken, Exp.AddToken, Exp.NumberToken}, 
+        Grammar<ExpToken, ExpSymbol> grammar = new(ExpSymbol.Add) {
+            { ExpSymbol.Add, o => new int[]{(int)o[0], (int)o[1] }, ExpToken.Number, ExpToken.Add, ExpToken.Number},
         };
 
         string str = "27 + 5";
 
-        IReadOnlyList<Token<Exp>> tokens = scanner.GetTokensOf(str);
-        ParseTree<Exp> tree = grammar.Parse(tokens);
+        IReadOnlyList<Token<ExpToken>> tokens = scanner.GetTokensOf(str);
+        int[] add = (int[]) grammar.Parse(tokens);
 
-        Token<Exp>[] array = new Token<Exp>[tree.Root.Tokens.Count];
-        for(int i = 0; i < array.Length; i++) {
-            array[i] = tree.Root.Tokens[i];
-        }
-
-        Assert.That(array, Is.EqualTo(new Token<Exp>[] {
-            new Token<Exp>(Exp.NumberToken, 0, "27"),
-            new Token<Exp>(Exp.AddToken, 3, "+"),
-            new Token<Exp>(Exp.NumberToken, 5, "5")
-        }));
-    }
-
-    private class Add {
-        public int LeftOperand { get; }
-        public int RightOperand { get; }    
-
-        public Add(int leftOperand, int rightOperand) {
-            LeftOperand = leftOperand;
-            RightOperand = rightOperand;
-        }
+        Assert.That(add[0], Is.EqualTo(27));
+        Assert.That(add[1], Is.EqualTo(5));
     }
 
 }

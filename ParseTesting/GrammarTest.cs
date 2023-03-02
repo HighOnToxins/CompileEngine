@@ -25,14 +25,13 @@ public class GrammarTest {
         {"\\s+"},
     };
 
-
     [Test]
     public void CanReadTokens() {
 
         Tokenizer<ExpToken> scanner = CreateExpScanner();
 
         Grammar<ExpToken, ExpSymbol> grammar = new(ExpSymbol.Add) {
-            { ExpSymbol.Add, o => new int[]{(int)o[0], (int)o[1] }, ExpToken.Number, ExpToken.Add, ExpToken.Number},
+            { ExpSymbol.Add, o => new int[]{(int)o[0], (int)o[2] }, ExpToken.Number, ExpToken.Add, ExpToken.Number},
         };
 
         string str = "27 + 5";

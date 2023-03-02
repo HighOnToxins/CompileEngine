@@ -8,7 +8,8 @@ public sealed class Production<TToken, TSymbol> where TToken : notnull where TSy
     private readonly Func<object[], object> _instansiateFunction;
     private readonly object[] _format; //TODO: Replace format with proper class.
 
-    //objects of format are either TToken or TSymbol
+    //objects of format are either TToken or TSymbol or other format 
+    //TODO: add UnrecognizedFormatObject exception
     public Production(Func<object[], object> instFunc, params object[] format) {
         _instansiateFunction = instFunc;
         _format = format;

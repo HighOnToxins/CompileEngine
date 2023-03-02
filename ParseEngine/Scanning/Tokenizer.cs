@@ -13,10 +13,10 @@ public sealed class Tokenizer<TToken>: IEnumerable<TokenSpecification<TToken>> w
     }
 
     public void Add(string regex) =>
-        _tokenSpecifications.Add(new TokenSpecification<TToken>(regex, default, s => null));
+        _tokenSpecifications.Add(new TokenSpecification<TToken>(regex));
 
     public void Add(string regex, TToken? category) =>
-        _tokenSpecifications.Add(new TokenSpecification<TToken>(regex, category,  s => null));
+        _tokenSpecifications.Add(new TokenSpecification<TToken>(regex, category));
 
     public void Add(string regex, TToken? category, Func<string, object?>? lexemeFunction) =>
         _tokenSpecifications.Add(new TokenSpecification<TToken>(regex, category, lexemeFunction));

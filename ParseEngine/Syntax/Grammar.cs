@@ -17,6 +17,8 @@ public sealed class Grammar<TToken, TSymbol> : IEnumerable<Production<TToken, TS
     //The objects of format, is either a TToken or a TSymbol
     //The objects of instansiateFunction are the output type.
 
+    //TODO: Add formatting.
+
     public void Add(TSymbol symbol, ParseOptions parseOptions, Func<object[], object> instansiateFunction, params object[] format) {
         if(_productions.TryGetValue(symbol, out Production<TToken, TSymbol>? production)) {
             throw new NotImplementedException();
@@ -32,6 +34,8 @@ public sealed class Grammar<TToken, TSymbol> : IEnumerable<Production<TToken, TS
             _productions.Add(symbol, new(instansiateFunction, format));
         }
     }
+
+    //TODO: Write recursive parse search.
 
     public object Parse(IReadOnlyList<Token<TToken>> source) {
 

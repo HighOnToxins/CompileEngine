@@ -60,8 +60,10 @@ public class GrammarTest {
         Exp exp = (Exp)grammar.Parse(tokens);
 
         if(exp is Add add && add.Operands[0] is Val v1 && add.Operands[1] is Val v2) {
-            Assert.That(v1.Value, Is.EqualTo(27));
-            Assert.That(v2.Value, Is.EqualTo(5));
+            Assert.Multiple(() => {
+                Assert.That(v1.Value, Is.EqualTo(27));
+                Assert.That(v2.Value, Is.EqualTo(5));
+            });
         } else {
             Assert.Fail();
         }
@@ -84,9 +86,11 @@ public class GrammarTest {
         Exp exp = (Exp) grammar.Parse(tokens);
 
         if(exp is Add add && add.Operands[0] is Mult mult && mult.Operands[0] is Val v0 && mult.Operands[1] is Val v1 && exp.Operands[1] is Val v2) {
-            Assert.That(v0.Value, Is.EqualTo(2));
-            Assert.That(v1.Value, Is.EqualTo(27));
-            Assert.That(v2.Value, Is.EqualTo(5));
+            Assert.Multiple(() => {
+                Assert.That(v0.Value, Is.EqualTo(2));
+                Assert.That(v1.Value, Is.EqualTo(27));
+                Assert.That(v2.Value, Is.EqualTo(5));
+            });
         } else {
             Assert.Fail();
         }

@@ -6,8 +6,9 @@ namespace ParseEngine.Syntax;
 public sealed class Production<TToken, TSymbol> where TToken : notnull where TSymbol : notnull {
 
     private readonly Func<object[], object> _instansiateFunction;
-    private readonly object[] _format;
+    private readonly object[] _format; //TODO: Replace format with proper class.
 
+    //objects of format are either TToken or TSymbol
     public Production(Func<object[], object> instFunc, params object[] format) {
         _instansiateFunction = instFunc;
         _format = format;

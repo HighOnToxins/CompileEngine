@@ -1,5 +1,6 @@
 ﻿
 using ParseEngine.Scanning;
+using ParseEngine.Syntax.Formatting;
 using System.Collections;
 
 namespace ParseEngine.Syntax; 
@@ -18,7 +19,7 @@ public sealed class Grammar<TToken, TSymbol> : IEnumerable<Production<TToken, TS
     //  -> Each object counts as an input object given to the instansiateFunction.
     //The objects of instansiateFunction are the output type.
 
-    public void Add(TSymbol symbol, ParseOptions parseOptions, Func<object?[], object> instansiateFunction, params object[] format) {
+    public void Add(TSymbol symbol, ParseOptions parseOptions, Func<object?[], object> instansiateFunction, params ParseFormat<TToken, TSymbol>[] format) {
         if(_productions.TryGetValue(symbol, out Production<TToken, TSymbol>? production)) {
             throw new NotImplementedException();
         } else {
@@ -26,13 +27,26 @@ public sealed class Grammar<TToken, TSymbol> : IEnumerable<Production<TToken, TS
         }
     }
 
-    public void Add(TSymbol symbol, Func<object?[], object> instansiateFunction, params object[] format) {
-        if(_productions.TryGetValue(symbol, out Production<TToken, TSymbol>? production)) {
-            throw new NotImplementedException();
-        } else {
-            _productions.Add(symbol, new(instansiateFunction, format));
+    public void Add(TSymbol symbol, ParseOptions parseOptions, Func<object?[], object> instansiateFunction, params object[] objectFormat) {
+        ParseFormat<TToken, TSymbol>[] format = new ParseFormat<TToken, TSymbol>[objectFormat.Length];
+
+        for(int i = 0; i < objectFormat.Length; i++) {
+            format[i] = objectFormat[i] switch {
+                ParseFormat<TToken, TSymbol> f => f,
+                TToken t => new TokenFormat<TToken, TSymbol>(t),
+                TSymbol s => new SymbolFormat<TToken, TSymbol>(s),
+                _ => throw new ArgumentException(),
+            };
         }
+
+        Add(symbol, parseOptions, instansiateFunction, format);
     }
+
+    public void Add(TSymbol symbol, Func<object?[], object> instansiateFunction, params ParseFormat<TToken, TSymbol>[] format) =>
+        Add(symbol, default, instansiateFunction, format);
+
+    public void Add(TSymbol symbol, Func<object?[], object> instansiateFunction, params object[] format) =>
+        Add(symbol, default, instansiateFunction, format);
 
     //TODO: Write recursive parse search.
 

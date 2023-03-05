@@ -14,14 +14,10 @@ public sealed class TokenProduction<TSymbol>: Production<TSymbol> where TSymbol 
     //match function
     public override ParseNode<TSymbol> Parse(in Grammar<TSymbol> grammar, ref int index, IReadOnlyList<Token<TSymbol>> source) {
 
-        if(_token.Equals(source[index].Category)) {
-            return new ParseNode<TSymbol>(new Token<TSymbol>[] { source[index] });
+        if(_token.Equals(source[index].Category)) { //peek function
+            return new ParseNode<TSymbol>(new Token<TSymbol>[] { source[index++] });
         } else {
-            if(_token.ToString() is string s) {
-                throw new UnexpectedException(index, s);
-            } else {
-                throw new UnexpectedException(index);
-            }
+            throw new UnexpectedException<TSymbol>(index, _token, source[index].Category);
         }
 
     }

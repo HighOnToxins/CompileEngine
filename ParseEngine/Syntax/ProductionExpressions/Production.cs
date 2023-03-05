@@ -14,6 +14,8 @@ public abstract class Production<TSymbol> where TSymbol : notnull {
         Operands = operands;
     }
 
+    //TODO: Add simplify/extract function.
+
     public abstract ParseNode<TSymbol> Parse(in Grammar<TSymbol> grammar, ref int index, IReadOnlyList<Token<TSymbol>> source);
 
 }

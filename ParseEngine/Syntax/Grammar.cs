@@ -41,12 +41,8 @@ public sealed class Grammar<TSymbol> : IEnumerable<KeyValuePair<TSymbol, Product
     internal ParseNode<TSymbol> RecursiveParse(TSymbol currentLHS, ref int index, IReadOnlyList<Token<TSymbol>> source) {
         if(_productions.TryGetValue(currentLHS, out Production<TSymbol>? production)) {
             return production.Parse(this, ref index, source);
-        }
-        
-        if(currentLHS.ToString() is string s) {
-            throw new UnexpectedException(index, s);
         } else {
-            throw new UnexpectedException(index);
+            throw new UnexpectedException<TSymbol>(index, currentLHS);
         }
     }
 

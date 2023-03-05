@@ -1,53 +1,50 @@
 using ParseEngine.Scanning;
 using ParseEngine.Syntax;
+using ParseEngine.Syntax.Formatting;
 
 namespace ParseTesting;
 
 public class GrammarTest {
 
-    //private enum ExpToken {
-    //    Number,
-    //    Add,
-    //    Mult,
-    //}
+    private enum Symbol {
+        NumberToken,
+        SeperatorToken,
+        StartToken,
+        EndToken,
 
-    //private enum ExpSymbol {
-    //    Exp,
-    //    Add,
-    //    Mult,
-    //    Val,
-    //}
+        ValuesLHS,
+    }
 
-    //private static Tokenizer<ExpToken> CreateExpScanner() => new() {
-    //    {"[0-9]+",  ExpToken.Number,    s => int.Parse(s)},
-    //    {"\\+",     ExpToken.Add},
-    //    { "\\*",    ExpToken.Mult},
-    //    {"\\s+"},
-    //};
+    private static Tokenizer<Symbol> CreateExpScanner() => new() {
+        {"[0-9]+",  Symbol.NumberToken,    s => int.Parse(s)},
+        {"\\,",     Symbol.SeperatorToken},
+        {"\\(",     Symbol.StartToken},
+        {"\\)",     Symbol.EndToken},
+        {"\\s+"},
+    };
 
-    //[Test]
-    //public void CanReadTokens() {
+    [Test]
+    public void CanReadTokens() {
 
-    //    Tokenizer<ExpToken> scanner = CreateExpScanner();
+        Tokenizer<Symbol> scanner = CreateExpScanner();
 
-    //    //TODO: Fix possibly null warning. (alternative than: "o[0] is int i ? i : throw new ArgumentException()")
-    //    Grammar<ExpToken, ExpSymbol> grammar = new(ExpSymbol.Add) {
-    //        //{ ExpSymbol.Add, o => new int[]{ (int)o[0], (int)o[2] }, ExpToken.Number, ExpToken.Add, ExpToken.Number}
-    //        //IDEA: { "A", o => new int[]{ (int)o[0], (int)o[2] }, "n a n"},
-    //    };
+        Grammar<Symbol> grammar = new(Symbol.ValuesLHS) {
+            {Symbol.ValuesLHS,
+                new Concatenation<Symbol>( // "(" number "," number ")" 
+                    new TokenProduction<Symbol>(Symbol.StartToken),
+                    new TokenProduction<Symbol>(Symbol.NumberToken),
+                    new TokenProduction<Symbol>(Symbol.SeperatorToken),
+                    new TokenProduction<Symbol>(Symbol.NumberToken),
+                    new TokenProduction<Symbol>(Symbol.EndToken)
+                )}
+        };
 
-    //    //Generic IDEA: grammar.Add<int, int, int[]>(ExpSymbol.Add, (i1, i2) => new int[] { i1, i2}, ExpToken.Number, ExpToken.Add, ExpToken.Number);
-    //    //Generic IDEA2: grammar.Add<int, int, int[]>(ExpSymbol.Add, (i1, i2) => new int[] { i1, i2}, new Format());
-    //    //IDEA3: Tokens, Symbols, Labels? 
+        string str = "(27 , 5)";
 
-    //    string str = "27 + 5";
+        IReadOnlyList<Token<Symbol>> tokens = scanner.GetTokensOf(str);
+        ParseNode<Symbol> container = grammar.Parse(tokens);
 
-    //    IReadOnlyList<Token<ExpToken>> tokens = scanner.GetTokensOf(str);
-    //    int[] add = (int[]) grammar.Parse(tokens);
-
-    //    Assert.That(add[0], Is.EqualTo(27));
-    //    Assert.That(add[1], Is.EqualTo(5));
-    //}
+    }
 
     //[Test]
     //public void CanReadSymbols() {

@@ -32,7 +32,7 @@ public class ScannerTest {
 
         Assert.That(tokens, Has.Length.EqualTo(expected.Length));
         for(int i = 0; i < tokens.Length; i++) {
-            if(tokens[i] is Token<Word> spelledTokens) {
+            if(tokens[i] is Token<Word, string> spelledTokens) {
                 Assert.That(spelledTokens.Lexeme, Is.EqualTo(expected[i]));
             } else {
                 Assert.Fail();

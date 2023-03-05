@@ -39,7 +39,7 @@ public sealed class Tokenizer<TSymbol>: IEnumerable<TokenSpecification> where TS
     private bool TryGetNextToken(ref int index, string s, out Token<TSymbol>? token) {
 
         foreach(TokenSpecification tokenSpecification in _tokenSpecifications) {
-            if(tokenSpecification is TokenSpecification<TSymbol> symbolSpecification) { 
+            if(tokenSpecification is TokenSpecification<TSymbol> symbolSpecification) {
                 if(symbolSpecification.MatchAt(s, index, out int length0, out token)) {
                     index += length0;
                     return true;
@@ -47,7 +47,7 @@ public sealed class Tokenizer<TSymbol>: IEnumerable<TokenSpecification> where TS
 
                 continue;
             }
-            
+
             if(tokenSpecification.MatchAt(s, index, out int length1)) {
                 index += length1;
                 token = null;

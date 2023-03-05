@@ -10,10 +10,10 @@ public class Token<TSymbol> where TSymbol : notnull {
     }
 }
 
-public sealed class Token<TSymbol, T> : Token<TSymbol> where TSymbol : notnull {
-    
+public sealed class Token<TSymbol, T>: Token<TSymbol> where TSymbol : notnull {
+
     public T Lexeme { get; private init; }
-    
+
     internal Token(TSymbol category, int index, T lexeme) : base(category, index) {
         Lexeme = lexeme;
     }

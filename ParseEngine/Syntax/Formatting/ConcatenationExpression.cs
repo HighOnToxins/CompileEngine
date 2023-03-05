@@ -5,9 +5,9 @@ public sealed class ConcatenationExpression<TSymbol>: ProductionExpression<TSymb
 
     private readonly IReadOnlyList<ProductionExpression<TSymbol>> _operands;
 
-    //TODO: Add empty check.
+    //TODO: Add empty check for concatenation.
 
-    public ConcatenationExpression(IReadOnlyList<ProductionExpression<TSymbol>> operands){
+    public ConcatenationExpression(IReadOnlyList<ProductionExpression<TSymbol>> operands) {
         _operands = operands;
     }
 

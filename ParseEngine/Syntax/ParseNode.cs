@@ -1,13 +1,13 @@
 ﻿
 using ParseEngine.Scanning;
 
-namespace ParseEngine.Syntax; 
+namespace ParseEngine.Syntax;
 
-public abstract class ParseNode<TSymbol> where TSymbol : notnull{
+public abstract class ParseNode<TSymbol> where TSymbol : notnull {
 
 }
 
-public sealed class ConcatenationNode<TSymbol> : ParseNode<TSymbol> where TSymbol : notnull {
+public sealed class ConcatenationNode<TSymbol>: ParseNode<TSymbol> where TSymbol : notnull {
 
     public IReadOnlyList<ParseNode<TSymbol>> SubNodes { get; private init; }
 
@@ -24,7 +24,7 @@ public sealed class ConcatenationNode<TSymbol> : ParseNode<TSymbol> where TSymbo
     }
 }
 
-public sealed class NonTerminalNode<TSymbol> : ParseNode<TSymbol> where TSymbol : notnull {
+public sealed class NonTerminalNode<TSymbol>: ParseNode<TSymbol> where TSymbol : notnull {
 
     public TSymbol Symbol { get; private init; }
 
@@ -36,7 +36,7 @@ public sealed class NonTerminalNode<TSymbol> : ParseNode<TSymbol> where TSymbol 
     }
 }
 
-public sealed class TerminalNode<TSymbol> : ParseNode<TSymbol> where TSymbol : notnull {
+public sealed class TerminalNode<TSymbol>: ParseNode<TSymbol> where TSymbol : notnull {
 
     public Token<TSymbol> Token { get; private init; }
 

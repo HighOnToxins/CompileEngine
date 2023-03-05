@@ -4,7 +4,7 @@ using ParseEngine.Syntax.Formatting;
 
 namespace ParseEngine.Syntax;
 
-internal sealed class Parser<TSymbol> where TSymbol : notnull{
+internal sealed class Parser<TSymbol> where TSymbol : notnull {
 
     private readonly Grammar<TSymbol> _grammar;
     private readonly IReadOnlyList<Token<TSymbol>> _source;

@@ -4,9 +4,9 @@ using ParseEngine.Syntax.Formatting;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
-namespace ParseEngine.Syntax; 
+namespace ParseEngine.Syntax;
 
-public sealed class Grammar<TSymbol> : IEnumerable<KeyValuePair<TSymbol, ProductionExpression<TSymbol>>> where TSymbol : notnull  {
+public sealed class Grammar<TSymbol>: IEnumerable<KeyValuePair<TSymbol, ProductionExpression<TSymbol>>> where TSymbol : notnull {
 
     private readonly TSymbol _startingSymbol;
     private readonly Dictionary<TSymbol, ProductionExpression<TSymbol>> _productions;
@@ -16,7 +16,6 @@ public sealed class Grammar<TSymbol> : IEnumerable<KeyValuePair<TSymbol, Product
         _productions = new();
     }
 
-    //TODO: Add union operator.
     public void Add(TSymbol symbol, ProductionExpression<TSymbol> production) {
         if(_productions.TryGetValue(symbol, out ProductionExpression<TSymbol>? expression)) {
             _productions[symbol] = new UnionExpression<TSymbol>(production, expression);
@@ -29,12 +28,6 @@ public sealed class Grammar<TSymbol> : IEnumerable<KeyValuePair<TSymbol, Product
         Add(symbol, new ConcatenationExpression<TSymbol>(symbols
             .Select(s => new SymbolExpression<TSymbol>(s)).ToArray()));
 
-    //TODO: Write recursive parse.
-
-    //TODO: Read tokens.
-    //TODO: Read symbols.
-    //TODO: Read subsymbols.
-    //TODO: Read other formatting.
     //TODO: Add labeling.
 
     public ParseNode<TSymbol> Parse(IReadOnlyList<Token<TSymbol>> source) {

@@ -5,7 +5,7 @@ public sealed class UnionExpression<TSymbol>: ProductionExpression<TSymbol> wher
 
     private readonly IReadOnlyList<ProductionExpression<TSymbol>> _operands;
 
-    //TODO: Add empty check.
+    //TODO: Add empty check for union.
 
     public UnionExpression(IReadOnlyList<ProductionExpression<TSymbol>> operands) {
         _operands = operands;

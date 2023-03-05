@@ -4,9 +4,9 @@ using System.Runtime.Serialization;
 namespace ParseEngine.Exceptions;
 
 [Serializable]
-public abstract class ParseException : Exception{
+public abstract class ParseException: Exception {
 
-    public ParseException() : base("The source could not be parsed properly.") {}
+    public ParseException() : base("The source could not be parsed properly.") { }
 
     public ParseException(string? message) : base(message) {
     }

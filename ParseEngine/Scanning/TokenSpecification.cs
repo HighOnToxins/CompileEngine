@@ -24,11 +24,11 @@ public class TokenSpecification {
     }
 }
 
-public class TokenSpecification<TSymbol> : TokenSpecification where TSymbol : notnull {
+public class TokenSpecification<TSymbol>: TokenSpecification where TSymbol : notnull {
 
     protected TSymbol Category { get; private init; }
 
-    internal TokenSpecification(string regex, TSymbol category) : base(regex){
+    internal TokenSpecification(string regex, TSymbol category) : base(regex) {
         Category = category;
     }
 
@@ -48,11 +48,11 @@ public class TokenSpecification<TSymbol> : TokenSpecification where TSymbol : no
     }
 }
 
-public sealed class TokenSpecification<TSymbol, TLexeme> : TokenSpecification<TSymbol> where TSymbol : notnull {
+public sealed class TokenSpecification<TSymbol, TLexeme>: TokenSpecification<TSymbol> where TSymbol : notnull {
 
     private readonly Func<string, TLexeme> _lexemeFunction;
 
-    internal TokenSpecification(string regex, TSymbol category, Func<string, TLexeme> lexemeFunction) : base(regex, category){
+    internal TokenSpecification(string regex, TSymbol category, Func<string, TLexeme> lexemeFunction) : base(regex, category) {
         _lexemeFunction = lexemeFunction;
     }
 

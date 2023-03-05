@@ -3,26 +3,45 @@ using ParseEngine.Scanning;
 
 namespace ParseEngine.Syntax; 
 
-public sealed class ParseNode<TSymbol> where TSymbol : notnull{
+public abstract class ParseNode<TSymbol> where TSymbol : notnull{
 
-    public TSymbol? Symbol { get; private init; }
+}
+
+public sealed class ConcatenationNode<TSymbol> : ParseNode<TSymbol> where TSymbol : notnull {
+
     public IReadOnlyList<ParseNode<TSymbol>> SubNodes { get; private init; }
-    public IReadOnlyList<Token<TSymbol>> Tokens { get; private init; }
 
-    internal ParseNode(TSymbol? symbol, IReadOnlyList<ParseNode<TSymbol>> subNodes, IReadOnlyList<Token<TSymbol>> tokens) {
-        Symbol = symbol;
+    internal ConcatenationNode(IReadOnlyList<ParseNode<TSymbol>> subNodes) {
         SubNodes = subNodes;
-        Tokens = tokens;
     }
 
-    public ParseNode(TSymbol? symbol, IReadOnlyList<ParseNode<TSymbol>> subNodes) : this(symbol, subNodes, Array.Empty<Token<TSymbol>>()){}
+    internal ConcatenationNode(params ParseNode<TSymbol>[] subNodes) {
+        SubNodes = subNodes;
+    }
 
-    public ParseNode(TSymbol? symbol, IReadOnlyList<Token<TSymbol>> tokens) : this(symbol, Array.Empty<ParseNode<TSymbol>>(), tokens) {}
+    internal ConcatenationNode() {
+        SubNodes = Array.Empty<ParseNode<TSymbol>>();
+    }
+}
 
-    public ParseNode(TSymbol? symbol) : this(symbol, Array.Empty<ParseNode<TSymbol>>(), Array.Empty<Token<TSymbol>>()) { }
+public sealed class NonTerminalNode<TSymbol> : ParseNode<TSymbol> where TSymbol : notnull {
 
-    public ParseNode(IReadOnlyList<ParseNode<TSymbol>> subNodes) : this(default, subNodes, Array.Empty<Token<TSymbol>>()) { }
+    public TSymbol Symbol { get; private init; }
 
-    public ParseNode(IReadOnlyList<Token<TSymbol>> tokens) : this(default, Array.Empty<ParseNode<TSymbol>>(), tokens) { }
+    public ParseNode<TSymbol> SubNode { get; private init; }
+
+    internal NonTerminalNode(TSymbol symbol, ParseNode<TSymbol> subNode) {
+        Symbol = symbol;
+        SubNode = subNode;
+    }
+}
+
+public sealed class TerminalNode<TSymbol> : ParseNode<TSymbol> where TSymbol : notnull {
+
+    public Token<TSymbol> Token { get; private init; }
+
+    internal TerminalNode(Token<TSymbol> tokens) {
+        Token = tokens;
+    }
 
 }

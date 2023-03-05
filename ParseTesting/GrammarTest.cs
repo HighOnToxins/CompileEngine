@@ -7,42 +7,66 @@ namespace ParseTesting;
 public class GrammarTest {
 
     private enum Symbol {
-        NumberToken,
-        SeperatorToken,
-        StartToken,
-        EndToken,
+        number,
+        seperator,
+        start,
+        end,
 
-        ValuesLHS,
+        Values,
     }
 
-    private static Tokenizer<Symbol> CreateExpScanner() => new() {
-        {"[0-9]+",  Symbol.NumberToken,    s => int.Parse(s)},
-        {"\\,",     Symbol.SeperatorToken},
-        {"\\(",     Symbol.StartToken},
-        {"\\)",     Symbol.EndToken},
+    private static Tokenizer<Symbol> CreateScanner() => new() {
+        {"[0-9]+",  Symbol.number,    s => int.Parse(s)},
+        {"\\,",     Symbol.seperator},
+        {"\\(",     Symbol.start},
+        {"\\)",     Symbol.end},
         {"\\s+"},
     };
 
     [Test]
     public void CanReadTokens() {
 
-        Tokenizer<Symbol> scanner = CreateExpScanner();
+        Tokenizer<Symbol> scanner = CreateScanner();
 
-        Grammar<Symbol> grammar = new(Symbol.ValuesLHS) {
-            {Symbol.ValuesLHS,
-                new Concatenation<Symbol>( // "(" number "," number ")" 
-                    new TokenProduction<Symbol>(Symbol.StartToken),
-                    new TokenProduction<Symbol>(Symbol.NumberToken),
-                    new TokenProduction<Symbol>(Symbol.SeperatorToken),
-                    new TokenProduction<Symbol>(Symbol.NumberToken),
-                    new TokenProduction<Symbol>(Symbol.EndToken)
-                )}
+        Grammar<Symbol> grammar = new(Symbol.Values) {
+            {Symbol.Values, new ConcatenationExpression<Symbol>( // "(" number "," number ")" 
+                new TerminalExpression<Symbol>(Symbol.start),
+                new TerminalExpression<Symbol>(Symbol.number),
+                new TerminalExpression<Symbol>(Symbol.seperator),
+                new TerminalExpression<Symbol>(Symbol.number),
+                new TerminalExpression<Symbol>(Symbol.end)
+            )}
         };
 
         string str = "(27 , 5)";
 
         IReadOnlyList<Token<Symbol>> tokens = scanner.GetTokensOf(str);
         ParseNode<Symbol> container = grammar.Parse(tokens);
+
+        Symbol[] expectedTokens = new Symbol[] { 
+            Symbol.start,
+            Symbol.number,
+            Symbol.seperator,
+            Symbol.number,
+            Symbol.end
+        };
+
+        if(container is NonTerminalNode<Symbol> nonterminal && nonterminal.Symbol == Symbol.Values &&
+            nonterminal.SubNode is ConcatenationNode<Symbol> concatenation) {
+            
+            Assert.That(concatenation.SubNodes, Has.Count.EqualTo(5));
+            
+            for(int i = 0; i < concatenation.SubNodes.Count; i++) {
+                if(concatenation.SubNodes[i] is TerminalNode<Symbol> terminal) {
+                    Assert.That(terminal.Token.Category, Is.EqualTo(expectedTokens[i]));
+                } else {
+                    Assert.Fail();
+                }
+            }
+
+        } else {
+            Assert.Fail();
+        }
 
     }
 

@@ -29,13 +29,7 @@ public class GrammarTest {
         Tokenizer<Symbol> scanner = CreateScanner();
 
         Grammar<Symbol> grammar = new(Symbol.Values) {
-            {Symbol.Values, new ConcatenationExpression<Symbol>( // "(" number "," number ")" 
-                new TerminalExpression<Symbol>(Symbol.start),
-                new TerminalExpression<Symbol>(Symbol.number),
-                new TerminalExpression<Symbol>(Symbol.seperator),
-                new TerminalExpression<Symbol>(Symbol.number),
-                new TerminalExpression<Symbol>(Symbol.end)
-            )}
+            {Symbol.Values, Symbol.start, Symbol.number, Symbol.seperator, Symbol.number, Symbol.end}
         };
 
         string str = "(27 , 5)";
@@ -70,30 +64,24 @@ public class GrammarTest {
 
     }
 
-    //[Test]
-    //public void CanReadSymbols() {
+    [Test]
+    public void CanReadSymbols() {
 
-    //    Tokenizer<ExpToken> scanner = CreateExpScanner();
+        Tokenizer<Symbol> scanner = CreateScanner();
 
-    //    Grammar<ExpToken, ExpSymbol> grammar = new(ExpSymbol.Exp) {
-    //        { ExpSymbol.Add, ParseOptions.LeftRight, o => new Add((Exp[])o), ExpSymbol.Mult, ExpToken.Add, ExpSymbol.Mult},
-    //        { ExpSymbol.Val, o => new Val((int)o[0]), ExpToken.Number},
-    //    };
+        Grammar<Symbol> grammar = new(Symbol.Values) {
+            {Symbol.Values, Symbol.start, Symbol.Values, Symbol.seperator, Symbol.Values, Symbol.end},
+            {Symbol.Values, Symbol.number},
+        };
 
-    //    string str = "27 + 5";
+        string str = "((1 , 2), 3)";
 
-    //    IReadOnlyList<Token<ExpToken>> tokens = scanner.GetTokensOf(str);
-    //    Exp exp = (Exp)grammar.Parse(tokens);
+        IReadOnlyList<Token<Symbol>> tokens = scanner.GetTokensOf(str);
+        ParseNode<Symbol> tree = grammar.Parse(tokens);
 
-    //    if(exp is Add add && add.Operands[0] is Val v1 && add.Operands[1] is Val v2) {
-    //        Assert.Multiple(() => {
-    //            Assert.That(v1.Value, Is.EqualTo(27));
-    //            Assert.That(v2.Value, Is.EqualTo(5));
-    //        });
-    //    } else {
-    //        Assert.Fail();
-    //    }
-    //}
+
+
+    }
 
     //[Test]
     //public void CanReadSubSymbols() {

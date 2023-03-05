@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace ParseEngine.Syntax; 
 
-public sealed class Grammar<TSymbol> : IGrammar<TSymbol>, IEnumerable<KeyValuePair<TSymbol, ProductionExpression<TSymbol>>> where TSymbol : notnull  {
+public sealed class Grammar<TSymbol> : IEnumerable<KeyValuePair<TSymbol, ProductionExpression<TSymbol>>> where TSymbol : notnull  {
 
     private readonly TSymbol _startingSymbol;
     private readonly Dictionary<TSymbol, ProductionExpression<TSymbol>> _productions;
@@ -18,12 +18,16 @@ public sealed class Grammar<TSymbol> : IGrammar<TSymbol>, IEnumerable<KeyValuePa
 
     //TODO: Add union operator.
     public void Add(TSymbol symbol, ProductionExpression<TSymbol> production) {
-        if(_productions.ContainsKey(symbol)) {
-            _productions[symbol] = production;
+        if(_productions.TryGetValue(symbol, out ProductionExpression<TSymbol>? expression)) {
+            _productions[symbol] = new UnionExpression<TSymbol>(production, expression);
         } else {
             _productions.Add(symbol, production);
         }
     }
+
+    public void Add(TSymbol symbol, params TSymbol[] symbols) =>
+        Add(symbol, new ConcatenationExpression<TSymbol>(symbols
+            .Select(s => new SymbolExpression<TSymbol>(s)).ToArray()));
 
     //TODO: Write recursive parse.
 
@@ -39,8 +43,10 @@ public sealed class Grammar<TSymbol> : IGrammar<TSymbol>, IEnumerable<KeyValuePa
 
     internal ProductionExpression<TSymbol> GetProduction(TSymbol symbol) => _productions[symbol];
 
-    bool IGrammar<TSymbol>.TryGetProduction(TSymbol symbol, [NotNullWhen(true)] out ProductionExpression<TSymbol>? production) =>
+    internal bool TryGetProduction(TSymbol symbol, [NotNullWhen(true)] out ProductionExpression<TSymbol>? production) =>
         _productions.TryGetValue(symbol, out production);
+
+    internal bool IsTerminal(TSymbol symbol) => _productions.ContainsKey(symbol);
 
     IEnumerator<KeyValuePair<TSymbol, ProductionExpression<TSymbol>>> IEnumerable<KeyValuePair<TSymbol, ProductionExpression<TSymbol>>>.GetEnumerator() =>
         _productions.GetEnumerator();

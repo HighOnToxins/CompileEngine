@@ -4,29 +4,29 @@ using System.Collections;
 
 namespace ParseEngine.Scanning;
 
-public sealed class Tokenizer<TToken>: IEnumerable<TokenSpecification<TToken>> where TToken : notnull {
+public sealed class Tokenizer<TSymbol>: IEnumerable<TokenSpecification<TSymbol>> where TSymbol : notnull {
 
-    private readonly List<TokenSpecification<TToken>> _tokenSpecifications;
+    private readonly List<TokenSpecification<TSymbol>> _tokenSpecifications;
 
     public Tokenizer() {
         _tokenSpecifications = new();
     }
 
     public void Add(string regex) =>
-        _tokenSpecifications.Add(new TokenSpecification<TToken>(regex));
+        _tokenSpecifications.Add(new TokenSpecification<TSymbol>(regex));
 
-    public void Add(string regex, TToken? category) =>
-        _tokenSpecifications.Add(new TokenSpecification<TToken>(regex, category));
+    public void Add(string regex, TSymbol? category) =>
+        _tokenSpecifications.Add(new TokenSpecification<TSymbol>(regex, category));
 
-    public void Add(string regex, TToken? category, Func<string, object?>? lexemeFunction) =>
-        _tokenSpecifications.Add(new TokenSpecification<TToken>(regex, category, lexemeFunction));
+    public void Add(string regex, TSymbol? category, Func<string, object?>? lexemeFunction) =>
+        _tokenSpecifications.Add(new TokenSpecification<TSymbol>(regex, category, lexemeFunction));
 
-    public IReadOnlyList<Token<TToken>> GetTokensOf(string s) {
-        List<Token<TToken>> tokens = new();
+    public IReadOnlyList<Token<TSymbol>> GetTokensOf(string s) {
+        List<Token<TSymbol>> tokens = new();
 
         int index = 0;
         while(index < s.Length) {
-            if(TryGetNextToken(ref index, s, out Token<TToken>? token)) {
+            if(TryGetNextToken(ref index, s, out Token<TSymbol>? token)) {
                 if(token != null) tokens.Add(token);
             } else {
                 throw new UndefinedTokenException(index, s);
@@ -36,9 +36,9 @@ public sealed class Tokenizer<TToken>: IEnumerable<TokenSpecification<TToken>> w
         return tokens;
     }
 
-    private bool TryGetNextToken(ref int index, string s, out Token<TToken>? token) {
+    private bool TryGetNextToken(ref int index, string s, out Token<TSymbol>? token) {
 
-        foreach(TokenSpecification<TToken> tokenSpecification in _tokenSpecifications) {
+        foreach(TokenSpecification<TSymbol> tokenSpecification in _tokenSpecifications) {
             if(tokenSpecification.MatchAt(s, index, out int length, out token)) {
                 index += length;
                 return true;
@@ -49,7 +49,7 @@ public sealed class Tokenizer<TToken>: IEnumerable<TokenSpecification<TToken>> w
         return false;
     }
 
-    public IEnumerator<TokenSpecification<TToken>> GetEnumerator() => _tokenSpecifications.GetEnumerator();
+    public IEnumerator<TokenSpecification<TSymbol>> GetEnumerator() => _tokenSpecifications.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 

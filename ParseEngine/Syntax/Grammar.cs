@@ -16,11 +16,8 @@ public sealed class Grammar<TSymbol> : IEnumerable<KeyValuePair<TSymbol, Product
         _productions = new();
     }
 
-    public void Add(TSymbol LHSSymbol, params TSymbol[] RHSSymbols) => 
-        Add(LHSSymbol, new Concatenation<TSymbol>(RHSSymbols));
-
     //TODO: Change to adding union operator.
-    private void Add(TSymbol symbol, Production<TSymbol> production) {
+    public void Add(TSymbol symbol, Production<TSymbol> production) {
         if(_productions.ContainsKey(symbol)) {
             _productions[symbol] = production;
         } else {
@@ -38,14 +35,18 @@ public sealed class Grammar<TSymbol> : IEnumerable<KeyValuePair<TSymbol, Product
 
     public ParseNode<TSymbol> Parse(IReadOnlyList<Token<TSymbol>> source) {
         int tokenIndex = 0;
-        return RecursiveParse(source, _startingSymbol, ref tokenIndex);
+        return RecursiveParse(_startingSymbol, ref tokenIndex, source);
     }
 
-    internal ParseNode<TSymbol> RecursiveParse(IReadOnlyList<Token<TSymbol>> souce, TSymbol currentSymbol, ref int index) {
-        if(_productions.TryGetValue(currentSymbol, out Production<TSymbol>? production)) {
-            return production.Parse(this, ref index, souce);
+    internal ParseNode<TSymbol> RecursiveParse(TSymbol currentLHS, ref int index, IReadOnlyList<Token<TSymbol>> source) {
+        if(_productions.TryGetValue(currentLHS, out Production<TSymbol>? production)) {
+            return production.Parse(this, ref index, source);
+        }
+        
+        if(currentLHS.ToString() is string s) {
+            throw new UnexpectedException(index, s);
         } else {
-            throw new TreeNotFoundException();
+            throw new UnexpectedException(index);
         }
     }
 

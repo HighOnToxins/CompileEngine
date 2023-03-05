@@ -1,10 +1,19 @@
 ﻿
-namespace ParseEngine.Exceptions; 
+using System.Runtime.Serialization;
 
-public class ParseException : Exception{
+namespace ParseEngine.Exceptions;
+
+[Serializable]
+public abstract class ParseException : Exception{
 
     public ParseException() : base("The source could not be parsed properly.") {}
 
-    public ParseException(string message) : base(message) {}
+    public ParseException(string? message) : base(message) {
+    }
 
+    public ParseException(string? message, Exception? innerException) : base(message, innerException) {
+    }
+
+    protected ParseException(SerializationInfo info, StreamingContext context) : base(info, context) {
+    }
 }

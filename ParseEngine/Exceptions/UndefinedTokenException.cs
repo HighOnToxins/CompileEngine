@@ -1,6 +1,7 @@
 ﻿
-namespace ParseEngine.Exceptions; 
+namespace ParseEngine.Exceptions;
 
+[Serializable]
 public sealed class UndefinedTokenException : ParseException{
 
     public int Index;

@@ -2,7 +2,7 @@
 
 namespace ParseEngine.Syntax.Formatting;
 
-internal abstract class Production<TSymbol> where TSymbol : notnull {
+public abstract class Production<TSymbol> where TSymbol : notnull {
 
     protected IReadOnlyList<Production<TSymbol>> Operands { get; private init; }
 
@@ -14,6 +14,6 @@ internal abstract class Production<TSymbol> where TSymbol : notnull {
         Operands = operands;
     }
 
-    public abstract ParseNode<TSymbol> Parse(in Grammar<TSymbol> grammar, ref int index, IReadOnlyList<Token<TSymbol>> soruce);
+    public abstract ParseNode<TSymbol> Parse(in Grammar<TSymbol> grammar, ref int index, IReadOnlyList<Token<TSymbol>> source);
 
 }

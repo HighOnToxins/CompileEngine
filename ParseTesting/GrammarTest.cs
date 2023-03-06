@@ -116,10 +116,21 @@ public class GrammarTest {
             {Symbol.Values, Symbol.number},
         };
 
-        string str = "((1 , 2), 3)";
+        string str = "((1 , 2) , 3)";
 
         IReadOnlyList<Token<Symbol>> tokens = scanner.GetTokensOf(str);
         ParseNode<Symbol> tree = grammar.Parse(tokens);
+
+        if(tree is NonTerminalNode<Symbol> nonterminal && nonterminal.Symbol == Symbol.Values &&
+            nonterminal.SubNode is ConcatenationNode<Symbol> concatenation) {
+
+            Assert.That(concatenation.SubNodes, Has.Count.EqualTo(3));
+
+            
+
+        } else {
+            Assert.Fail();
+        }
     }
 
 }

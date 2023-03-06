@@ -17,11 +17,11 @@ internal sealed class Parser<TSymbol> where TSymbol : notnull {
         _index = 0;
     }
 
+    internal bool IsTerminal(TSymbol symbol) => _grammar.IsTerminal(symbol);
+
     public Token<TSymbol> Peek() {
         return _source[_index];
     }
-
-    internal bool IsTerminal(TSymbol symbol) => _grammar.IsTerminal(symbol);
 
     public Token<TSymbol> Expect(TSymbol symbol) {
         if(symbol.Equals(Peek().Category)) {
@@ -41,4 +41,7 @@ internal sealed class Parser<TSymbol> where TSymbol : notnull {
         }
     }
 
+    public ParseNode<TSymbol> Fork(IReadOnlyList<ProductionExpression<TSymbol>> operands){
+        throw new NotImplementedException();
+    }
 }

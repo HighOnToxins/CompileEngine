@@ -5,14 +5,16 @@ public sealed class ConcatenationExpression<TSymbol>: ProductionExpression<TSymb
 
     private readonly IReadOnlyList<ProductionExpression<TSymbol>> _operands;
 
-    //TODO: Add empty check for concatenation.
-
     public ConcatenationExpression(IReadOnlyList<ProductionExpression<TSymbol>> operands) {
         _operands = operands;
+
+        if(_operands.Count == 0) throw new ArgumentException("Operand size can not be zero.");
     }
 
     public ConcatenationExpression(params ProductionExpression<TSymbol>[] operands) {
         _operands = operands;
+
+        if(_operands.Count == 0) throw new ArgumentException("Operand size can not be zero.");
     }
 
     internal override ParseNode<TSymbol> Parse(Parser<TSymbol> parser) {

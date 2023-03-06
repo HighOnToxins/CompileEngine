@@ -5,17 +5,19 @@ public sealed class UnionExpression<TSymbol>: ProductionExpression<TSymbol> wher
 
     private readonly IReadOnlyList<ProductionExpression<TSymbol>> _operands;
 
-    //TODO: Add empty check for union.
-
     public UnionExpression(IReadOnlyList<ProductionExpression<TSymbol>> operands) {
         _operands = operands;
+
+        if(_operands.Count == 0) throw new ArgumentException("Operand size can not be zero.");
     }
 
     public UnionExpression(params ProductionExpression<TSymbol>[] operands) {
         _operands = operands;
+
+        if(_operands.Count == 0) throw new ArgumentException("Operand size can not be zero.");
     }
 
     internal override ParseNode<TSymbol> Parse(Parser<TSymbol> parser) {
-        throw new NotImplementedException(); //TODO: add fork function to parser.
+        return parser.Fork(_operands);
     }
 }

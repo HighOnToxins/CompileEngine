@@ -1,6 +1,5 @@
 using ParseEngine.Scanning;
 using ParseEngine.Syntax;
-using System.ComponentModel;
 
 namespace ParseTesting;
 
@@ -77,7 +76,7 @@ public class GrammarTest {
         IReadOnlyList<Token<Symbol>> tokens = scanner.GetTokensOf(str);
         ParseNode<Symbol> tree = grammar.Parse(tokens);
 
-        int[] expectedValues = new int[] {1, 2, 3, 4};
+        int[] expectedValues = new int[] { 1, 2, 3, 4 };
 
         if(tree is NonTerminalNode<Symbol> nonterminal && nonterminal.Symbol == Symbol.ValueValues &&
             nonterminal.SubNode is ConcatenationNode<Symbol> concatenation) {
@@ -126,7 +125,7 @@ public class GrammarTest {
 
             Assert.That(concatenation.SubNodes, Has.Count.EqualTo(3));
 
-            
+
 
         } else {
             Assert.Fail();

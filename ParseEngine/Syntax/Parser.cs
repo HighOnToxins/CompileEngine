@@ -4,6 +4,7 @@ using ParseEngine.Syntax.Formatting;
 
 namespace ParseEngine.Syntax;
 
+//Left-left (top-down) Parser
 internal sealed class Parser<TSymbol> where TSymbol : notnull {
 
     private readonly Grammar<TSymbol> _grammar;
@@ -23,25 +24,29 @@ internal sealed class Parser<TSymbol> where TSymbol : notnull {
         return _source[_index];
     }
 
-    public Token<TSymbol> Expect(TSymbol symbol) {
-        if(symbol.Equals(Peek().Category)) {
+    public Token<TSymbol> Expect(TSymbol terminal) {
+        if(terminal.Equals(Peek().Category)) {
             Token<TSymbol> token = Peek();
             _index++;
             return token;
         } else {
-            throw new UnexpectedException<TSymbol>(_index, symbol, Peek().Category);
+            throw new UnexpectedException<TSymbol>(_index, terminal, Peek().Category);
         }
     }
 
-    public ParseNode<TSymbol> Parse(TSymbol symbol) {
-        if(_grammar.TryGetProduction(symbol, out ProductionExpression<TSymbol>? production)) {
-            return new NonTerminalNode<TSymbol>(symbol, production.Parse(this));
+    public ParseNode<TSymbol> Parse(TSymbol nonterminal) {
+        if(_grammar.TryGetProduction(nonterminal, out ProductionExpression<TSymbol>? production)) {
+            return new NonTerminalNode<TSymbol>(nonterminal, production.Parse(this));
         } else {
-            throw new UnexpectedException<TSymbol>(_index, symbol);
+            throw new UnexpectedException<TSymbol>(_index, nonterminal);
         }
     }
 
-    public ParseNode<TSymbol> Fork(IReadOnlyList<ProductionExpression<TSymbol>> operands){
+    public ParseNode<TSymbol> Pick(IReadOnlyList<ProductionExpression<TSymbol>> options) {
+
+        //TODO: add/use lookahead function/method.
+        //TODO: add/use backtracking/checkpointing.
+
         throw new NotImplementedException();
     }
 }

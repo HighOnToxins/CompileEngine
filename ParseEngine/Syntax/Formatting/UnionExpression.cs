@@ -18,6 +18,6 @@ public sealed class UnionExpression<TSymbol>: ProductionExpression<TSymbol> wher
     }
 
     internal override ParseNode<TSymbol> Parse(Parser<TSymbol> parser) {
-        return parser.Fork(_operands);
+        return parser.Pick(_operands);
     }
 }

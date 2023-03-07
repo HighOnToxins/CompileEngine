@@ -18,7 +18,7 @@ internal sealed class Parser<TSymbol> where TSymbol : notnull {
     public Parser(Grammar<TSymbol> grammar, IReadOnlyList<Token<TSymbol>> source, int maxLookahead = 1) {
         _grammar = grammar;
         _source = source;
-        _maxLookahead = maxLookahead - 1;
+        _maxLookahead = maxLookahead;
         _index = 0;
     }
 
@@ -58,7 +58,7 @@ internal sealed class Parser<TSymbol> where TSymbol : notnull {
         List<ProductionExpression<TSymbol>> paths = options.ToList();
         for(int lookahead = 0; lookahead < _maxLookahead && paths.Count > 1; lookahead++) {
             for(int i = 0; i < paths.Count && paths.Count > lookahead; i++) {
-                if(!_grammar.Lookahead(paths[i], Peek(lookahead))) {
+                if(!_grammar.Lookahead(paths[i], lookahead).Contains(Peek(lookahead))) {
                     paths.RemoveAt(i);
                     i--;
                 }

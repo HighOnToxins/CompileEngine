@@ -17,7 +17,6 @@ public sealed class UnionExpression<TSymbol>: ProductionExpression<TSymbol> wher
         if(_operands.Count == 0) throw new ArgumentException("Operand size can not be zero.");
     }
 
-    internal override ParseNode<TSymbol> Parse(Parser<TSymbol> parser) {
-        return parser.Pick(_operands);
-    }
+    internal override ParseNode<TSymbol> Parse(Parser<TSymbol> parser) =>
+        parser.Pick(_operands);
 }

@@ -39,7 +39,7 @@ public sealed class Grammar<TSymbol>: IEnumerable<KeyValuePair<TSymbol, Producti
     internal bool TryGetProduction(TSymbol symbol, [NotNullWhen(true)] out ProductionExpression<TSymbol>? production) =>
         _productions.TryGetValue(symbol, out production);
 
-    internal bool IsTerminal(TSymbol symbol) => _productions.ContainsKey(symbol);
+    internal bool IsNonTerminal(TSymbol symbol) => _productions.ContainsKey(symbol);
 
     IEnumerator<KeyValuePair<TSymbol, ProductionExpression<TSymbol>>> IEnumerable<KeyValuePair<TSymbol, ProductionExpression<TSymbol>>>.GetEnumerator() =>
         _productions.GetEnumerator();

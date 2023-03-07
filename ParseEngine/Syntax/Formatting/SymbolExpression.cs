@@ -9,12 +9,7 @@ public sealed class SymbolExpression<TSymbol>: ProductionExpression<TSymbol> whe
         _symbol = symbol;
     }
 
-    internal override ParseNode<TSymbol> Parse(Parser<TSymbol> parser) {
-        if(parser.IsTerminal(_symbol)) {
-            return parser.Parse(_symbol);
-        } else {
-            return new TerminalNode<TSymbol>(parser.Expect(_symbol));
-        }
-    }
+    internal override ParseNode<TSymbol> Parse(Parser<TSymbol> parser) =>
+        parser.Match(_symbol);
 
 }

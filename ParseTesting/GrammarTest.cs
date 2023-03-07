@@ -45,7 +45,7 @@ public class GrammarTest {
         };
 
         if(container is NonTerminalNode<Symbol> nonterminal && nonterminal.Symbol == Symbol.Values &&
-            nonterminal.SubNode is ConcatenationNode<Symbol> concatenation) {
+            nonterminal.SubNode is ComplimentNode<Symbol> concatenation) {
 
             Assert.That(concatenation.SubNodes, Has.Count.EqualTo(5));
 
@@ -79,13 +79,13 @@ public class GrammarTest {
         int[] expectedValues = new int[] { 1, 2, 3, 4 };
 
         if(tree is NonTerminalNode<Symbol> nonterminal && nonterminal.Symbol == Symbol.ValueValues &&
-            nonterminal.SubNode is ConcatenationNode<Symbol> concatenation) {
+            nonterminal.SubNode is ComplimentNode<Symbol> concatenation) {
 
             Assert.That(concatenation.SubNodes, Has.Count.EqualTo(3));
 
             for(int i = 0; i < concatenation.SubNodes.Count; i += 2) {
                 if(concatenation.SubNodes[i] is NonTerminalNode<Symbol> nonterminal2 &&
-                    nonterminal2.SubNode is ConcatenationNode<Symbol> concatenation2) {
+                    nonterminal2.SubNode is ComplimentNode<Symbol> concatenation2) {
 
                     for(int j = 1; j < concatenation2.SubNodes.Count; j += 2) {
                         if(concatenation2.SubNodes[j] is TerminalNode<Symbol> terminal &&
@@ -121,7 +121,7 @@ public class GrammarTest {
         ParseNode<Symbol> tree = grammar.Parse(tokens);
 
         if(tree is NonTerminalNode<Symbol> nonterminal && nonterminal.Symbol == Symbol.Values &&
-            nonterminal.SubNode is ConcatenationNode<Symbol> concatenation) {
+            nonterminal.SubNode is ComplimentNode<Symbol> concatenation) {
 
             Assert.That(concatenation.SubNodes, Has.Count.EqualTo(3));
 

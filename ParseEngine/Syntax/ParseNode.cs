@@ -7,19 +7,19 @@ public abstract class ParseNode<TSymbol> where TSymbol : notnull {
 
 }
 
-public sealed class ConcatenationNode<TSymbol>: ParseNode<TSymbol> where TSymbol : notnull {
+public sealed class ComplimentNode<TSymbol>: ParseNode<TSymbol> where TSymbol : notnull {
 
     public IReadOnlyList<ParseNode<TSymbol>> SubNodes { get; private init; }
 
-    internal ConcatenationNode(IReadOnlyList<ParseNode<TSymbol>> subNodes) {
+    internal ComplimentNode(IReadOnlyList<ParseNode<TSymbol>> subNodes) {
         SubNodes = subNodes;
     }
 
-    internal ConcatenationNode(params ParseNode<TSymbol>[] subNodes) {
+    internal ComplimentNode(params ParseNode<TSymbol>[] subNodes) {
         SubNodes = subNodes;
     }
 
-    internal ConcatenationNode() {
+    internal ComplimentNode() {
         SubNodes = Array.Empty<ParseNode<TSymbol>>();
     }
 }

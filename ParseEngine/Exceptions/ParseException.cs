@@ -1,4 +1,6 @@
 ﻿
+//TODO: Rename project from ParserEngine to CompilerEngine
+
 using System.Runtime.Serialization;
 
 namespace ParseEngine.Exceptions;

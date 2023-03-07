@@ -47,4 +47,7 @@ public sealed class Grammar<TSymbol>: IEnumerable<KeyValuePair<TSymbol, Producti
     public IEnumerator GetEnumerator() =>
         throw new NotImplementedException();
 
+    internal bool Lookahead(ProductionExpression<TSymbol> productionExpression, Token<TSymbol> token) {
+        throw new NotImplementedException();
+    }
 }

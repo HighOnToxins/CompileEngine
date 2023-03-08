@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ParseEngine\CompileEngine.csproj" />
+    <ProjectReference Include="..\CompileEngine\CompileEngine.csproj" />
   </ItemGroup>
 
 </Project>

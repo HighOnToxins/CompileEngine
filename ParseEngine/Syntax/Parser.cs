@@ -12,17 +12,67 @@ internal sealed class Parser<TSymbol> where TSymbol : notnull {
     private readonly Grammar<TSymbol> _grammar;
     private readonly IReadOnlyList<Token<TSymbol>> _source;
 
-    private readonly int _maxLookahead;
+    private readonly int _maxLook;
     private int _index;
 
     public Parser(Grammar<TSymbol> grammar, IReadOnlyList<Token<TSymbol>> source, int maxLookahead = 1) {
         _grammar = grammar;
         _source = source;
-        _maxLookahead = maxLookahead;
+        _maxLook = maxLookahead;
         _index = 0;
     }
 
-    public Token<TSymbol> Peek(int i = 0) => _source[_index + i];
+    public NonTerminalNode<TSymbol> Parse(TSymbol nonterminal) {
+        if(_grammar.TryGetProduction(nonterminal, out Union<TSymbol>? union)) {
+            return new NonTerminalNode<TSymbol>(nonterminal, Pick(union));
+        } else {
+            throw new InvalidOperationException("Symbol was not nonterminal.");
+        }
+    }
+
+    public ParseNode<TSymbol> Pick(Union<TSymbol> union) {
+        if(union.Count <= 1) {
+            return Loop(union[0]);
+        }
+
+        List<Compliment<TSymbol>> paths = union.ToList();
+        
+        //look
+        for(int l = 0; l < _maxLook; l++) {
+            Token<TSymbol> peekedToken = Peek(l);
+            for(int i = 0; i < paths.Count && paths.Count > 1; i++) {
+                if(!_grammar.Lookahead(paths[i], l).Contains(peekedToken.Category)) {
+                    paths.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+
+        //track/depth
+        for(int i = 0; i < paths.Count; i++) {
+            try {
+                return Loop(paths[i]);
+            } catch(CompileException e) {
+                if(i == paths.Count - 1) {
+                    throw e;
+                }
+            }
+        }
+
+        throw new ArgumentException("No path available and no exception thrown.");
+    }
+
+    public ParseNode<TSymbol> Loop(Compliment<TSymbol> compliment) {
+        if(compliment.Count <= 1) {
+            return Match(compliment[0]);
+        }
+
+        ParseNode<TSymbol>[] nodes = compliment
+            .Select(s => Match(s))
+            .ToArray();
+
+        return new ComplimentNode<TSymbol>(nodes);
+    }
 
     public ParseNode<TSymbol> Match(TSymbol symbol) {
         if(_grammar.IsNonTerminal(symbol)) {
@@ -38,47 +88,11 @@ internal sealed class Parser<TSymbol> where TSymbol : notnull {
             _index++;
             return new TerminalNode<TSymbol>(token);
         } else {
-            throw new UnexpectedException<TSymbol>(_index, terminal, Peek().Category);
+            throw new UnexpectedException<TSymbol>(_index, terminal, token.Category);
         }
     }
 
-    public NonTerminalNode<TSymbol> Parse(TSymbol nonterminal) {
-        if(_grammar.TryGetProduction(nonterminal, out ProductionExpression<TSymbol>? production)) {
-            return new NonTerminalNode<TSymbol>(nonterminal, production.Parse(this));
-        } else {
-            throw new UnexpectedException<TSymbol>(_index, nonterminal);
-        }
-    }
+    public Token<TSymbol> Peek(int i = 0) => _source[_index + i];
 
-    public ParseNode<TSymbol> Pick(IReadOnlyList<ProductionExpression<TSymbol>> options) {
-        return Track(Look(options));
-    }
-
-    private IReadOnlyList<ProductionExpression<TSymbol>> Look(IReadOnlyList<ProductionExpression<TSymbol>> options) {
-        List<ProductionExpression<TSymbol>> paths = options.ToList();
-        for(int lookahead = 0; lookahead < _maxLookahead && paths.Count > 1; lookahead++) {
-            for(int i = 0; i < paths.Count && paths.Count > lookahead; i++) {
-                if(!_grammar.Lookahead(paths[i], lookahead).Contains(Peek(lookahead))) {
-                    paths.RemoveAt(i);
-                    i--;
-                }
-            }
-        }
-        return paths;
-    }
-
-    private ParseNode<TSymbol> Track(IReadOnlyList<ProductionExpression<TSymbol>> paths) {
-        for(int i = 0; i < paths.Count; i++) {
-            try {
-                return paths[i].Parse(this);
-            } catch(ParseException e) {
-                if(i == paths.Count - 1) {
-                    throw e;
-                }
-            }
-        }
-
-        throw new ArgumentException("No path available and no exception thrown.");
-    }
 
 }

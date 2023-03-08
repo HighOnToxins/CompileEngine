@@ -1,35 +1,42 @@
 ﻿
 using ParseEngine.Scanning;
-using ParseEngine.Syntax.Formatting;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
 namespace ParseEngine.Syntax;
 
-public sealed class Grammar<TSymbol>: IEnumerable<KeyValuePair<TSymbol, ProductionExpression<TSymbol>>> where TSymbol : notnull {
+public class Union<TSymbol>: List<Compliment<TSymbol>> { }
+public class Compliment<TSymbol>: List<TSymbol> {
+    public Compliment(TSymbol[] symbols) : base(symbols) { }
+}
+public class Digit<TSymbol>: List<TSymbol> {}
+
+
+public sealed class Grammar<TSymbol>: IEnumerable where TSymbol : notnull {
 
     private readonly TSymbol _startingSymbol;
-    private readonly Dictionary<TSymbol, ProductionExpression<TSymbol>> _productions;
+    private readonly Dictionary<TSymbol, Union<TSymbol>> _productions;
     private readonly int _maxLookahead;
+
+    private readonly Dictionary<TSymbol, List<Digit<TSymbol>>> _lookaheadTable; 
 
     public Grammar(TSymbol startingSymbol, int maxLookahead = 1) {
         _startingSymbol = startingSymbol;
         _productions = new();
         _maxLookahead = maxLookahead;
+
+        _lookaheadTable = new();
     }
 
 
-    public void Add(TSymbol symbol, ProductionExpression<TSymbol> production) {
-        if(_productions.TryGetValue(symbol, out ProductionExpression<TSymbol>? expression)) {
-            _productions[symbol] = new UnionExpression<TSymbol>(production, expression);
+    public void Add(TSymbol symbol, params TSymbol[] symbols) {
+        Compliment<TSymbol> concatenation = new(symbols);
+        if(_productions.TryGetValue(symbol, out Union<TSymbol>? union)) {
+            union.Add(concatenation);
         } else {
-            _productions.Add(symbol, production);
+            _productions.Add(symbol, new Union<TSymbol> { concatenation });
         }
     }
-
-    public void Add(TSymbol symbol, params TSymbol[] symbols) =>
-        Add(symbol, new ConcatenationExpression<TSymbol>(symbols
-            .Select(s => new SymbolExpression<TSymbol>(s)).ToArray()));
 
 
     //TODO: Add labeling.
@@ -39,25 +46,30 @@ public sealed class Grammar<TSymbol>: IEnumerable<KeyValuePair<TSymbol, Producti
     }
 
 
-    internal bool TryGetProduction(TSymbol nonterminal, [NotNullWhen(true)] out ProductionExpression<TSymbol>? production) =>
-        _productions.TryGetValue(nonterminal, out production);
-
     internal bool IsNonTerminal(TSymbol symbol) => _productions.ContainsKey(symbol);
 
+    internal bool TryGetProduction(TSymbol nonterminal, [NotNullWhen(true)] out Union<TSymbol>? union) =>
+        _productions.TryGetValue(nonterminal, out union);
 
-    internal IReadOnlySet<Token<TSymbol>> Lookahead(IReadOnlyList<TSymbol> symbols, Token<TSymbol> token, int look) {
 
-        /* Pseudocode: Looking ahead the desired amount, and caching the result.
+    internal IReadOnlySet<TSymbol> Lookahead(Compliment<TSymbol> symbol, int look) {
+
+        /* Pseudocode: Looking ahead the desired amount, and caching the result. (Depth search to find the correct token)
             
             if is cached 
                 return cached
             
-            Queue (path, tokens) frontier = add all productionExpressions.
-            HashSet descovered
+            numToken = 0
 
-            while frontier.count > 0
-        
-
+            recFunction symbol, ref numToken:
+                      
+                loop all compliments of symbol:
+                    loop all tokens of symbol:            
+                        if symbol is terminal :
+                            add terminalSymbol to set
+                            numToken++
+                        is non terminal: 
+                            call rec give it the symbol
 
             cache answer
 
@@ -66,10 +78,6 @@ public sealed class Grammar<TSymbol>: IEnumerable<KeyValuePair<TSymbol, Producti
         throw new NotImplementedException();
     }
 
-
-    IEnumerator<KeyValuePair<TSymbol, ProductionExpression<TSymbol>>> IEnumerable<KeyValuePair<TSymbol, ProductionExpression<TSymbol>>>.GetEnumerator() =>
-        _productions.GetEnumerator();
-
-    public IEnumerator GetEnumerator() => _productions.GetEnumerator();
+    public IEnumerator GetEnumerator() => throw new NotImplementedException();
 
 }

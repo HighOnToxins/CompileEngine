@@ -2,7 +2,7 @@
 namespace ParseEngine.Exceptions;
 
 [Serializable]
-public sealed class UndefinedTokenException: ParseException {
+public sealed class UndefinedTokenException: CompileException {
 
     public int Index;
     public string String;

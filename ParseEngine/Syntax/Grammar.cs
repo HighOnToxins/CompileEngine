@@ -52,19 +52,24 @@ public sealed class Grammar<TSymbol>: IEnumerable where TSymbol : notnull {
         _productions.TryGetValue(nonterminal, out union);
 
 
-    internal IReadOnlySet<Token<TSymbol>> Lookahead(TSymbol symbol, int look) {
+    internal IReadOnlySet<TSymbol> Lookahead(Compliment<TSymbol> symbol, int look) {
 
-        /* Pseudocode: Looking ahead the desired amount, and caching the result.
+        /* Pseudocode: Looking ahead the desired amount, and caching the result. (Depth search to find the correct token)
             
             if is cached 
                 return cached
             
-            Queue (path, tokens) frontier = add all productionExpressions.
-            HashSet descovered
+            numToken = 0
 
-            while frontier.count > 0
-        
-
+            recFunction symbol, ref numToken:
+                      
+                loop all compliments of symbol:
+                    loop all tokens of symbol:            
+                        if symbol is terminal :
+                            add terminalSymbol to set
+                            numToken++
+                        is non terminal: 
+                            call rec give it the symbol
 
             cache answer
 

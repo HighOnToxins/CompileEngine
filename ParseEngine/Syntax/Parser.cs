@@ -37,17 +37,18 @@ internal sealed class Parser<TSymbol> where TSymbol : notnull {
 
         List<Compliment<TSymbol>> paths = union.ToList();
         
+        //look
         for(int l = 0; l < _maxLook; l++) {
+            Token<TSymbol> peekedToken = Peek(l);
             for(int i = 0; i < paths.Count && paths.Count > 1; i++) {
-                for(int j = 0; j < paths[i].Count && paths.Count > 1; j++) {
-                    if(!_grammar.Lookahead(paths[i][j], l).Contains(Peek(l))) {
-                        paths.RemoveAt(j);
-                        j--;
-                    }
+                if(!_grammar.Lookahead(paths[i], l).Contains(peekedToken.Category)) {
+                    paths.RemoveAt(i);
+                    i--;
                 }
             }
         }
 
+        //track/depth
         for(int i = 0; i < paths.Count; i++) {
             try {
                 return Loop(paths[i]);

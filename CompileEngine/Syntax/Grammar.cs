@@ -45,7 +45,7 @@ public sealed class Grammar<TSymbol>: IEnumerable<KeyValuePair<TSymbol, Producti
     internal bool IsNonTerminal(TSymbol symbol) => _productions.ContainsKey(symbol);
 
 
-    internal IReadOnlySet<Token<TSymbol>> Lookahead(IReadOnlyList<TSymbol> symbols, Token<TSymbol> token, int look) {
+    internal IReadOnlySet<TSymbol> Lookahead(ProductionExpression<TSymbol> symbols, int look) {
 
         /* Pseudocode: Looking ahead the desired amount, and caching the result.
             

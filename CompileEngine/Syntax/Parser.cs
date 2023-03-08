@@ -2,7 +2,6 @@
 using ParseEngine.Exceptions;
 using ParseEngine.Scanning;
 using ParseEngine.Syntax.Formatting;
-using System.Diagnostics.CodeAnalysis;
 
 namespace ParseEngine.Syntax;
 
@@ -57,8 +56,9 @@ internal sealed class Parser<TSymbol> where TSymbol : notnull {
     private IReadOnlyList<ProductionExpression<TSymbol>> Look(IReadOnlyList<ProductionExpression<TSymbol>> options) {
         List<ProductionExpression<TSymbol>> paths = options.ToList();
         for(int lookahead = 0; lookahead < _maxLookahead && paths.Count > 1; lookahead++) {
+            Token<TSymbol> peekedToken = Peek(lookahead);
             for(int i = 0; i < paths.Count && paths.Count > lookahead; i++) {
-                if(!_grammar.Lookahead(paths[i], lookahead).Contains(Peek(lookahead))) {
+                if(!_grammar.Lookahead(paths[i], lookahead).Contains(peekedToken.Category)) {
                     paths.RemoveAt(i);
                     i--;
                 }
@@ -71,7 +71,7 @@ internal sealed class Parser<TSymbol> where TSymbol : notnull {
         for(int i = 0; i < paths.Count; i++) {
             try {
                 return paths[i].Parse(this);
-            } catch(ParseException e) {
+            } catch(CompileException e) {
                 if(i == paths.Count - 1) {
                     throw e;
                 }

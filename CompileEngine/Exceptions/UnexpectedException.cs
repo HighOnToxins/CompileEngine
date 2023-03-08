@@ -3,7 +3,7 @@
 namespace ParseEngine.Syntax.Formatting;
 
 [Serializable]
-internal class UnexpectedException: ParseException {
+internal class UnexpectedException: CompileException {
     public int Index { get; private init; }
 
     public UnexpectedException(int index) : base($"Unexpected at index {index}.") {

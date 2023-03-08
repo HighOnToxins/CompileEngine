@@ -51,33 +51,6 @@ public sealed class Grammar<TSymbol>: IEnumerable where TSymbol : notnull {
     internal bool TryGetProduction(TSymbol nonterminal, [NotNullWhen(true)] out Union<TSymbol>? union) =>
         _productions.TryGetValue(nonterminal, out union);
 
-
-    internal IReadOnlySet<TSymbol> Lookahead(Compliment<TSymbol> symbol, int look) {
-
-        /* Pseudocode: Looking ahead the desired amount, and caching the result. (Depth search to find the correct token)
-            
-            if is cached 
-                return cached
-            
-            numToken = 0
-
-            recFunction symbol, ref numToken:
-                      
-                loop all compliments of symbol:
-                    loop all tokens of symbol:            
-                        if symbol is terminal :
-                            add terminalSymbol to set
-                            numToken++
-                        is non terminal: 
-                            call rec give it the symbol
-
-            cache answer
-
-        */
-
-        throw new NotImplementedException();
-    }
-
     public IEnumerator GetEnumerator() => throw new NotImplementedException();
 
 }

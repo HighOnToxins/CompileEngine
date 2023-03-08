@@ -52,7 +52,7 @@ internal sealed class Parser<TSymbol> where TSymbol : notnull {
         for(int i = 0; i < paths.Count; i++) {
             try {
                 return Loop(paths[i]);
-            } catch(ParseException e) {
+            } catch(CompileException e) {
                 if(i == paths.Count - 1) {
                     throw e;
                 }

@@ -1,5 +1,5 @@
 ﻿
-namespace ParseEngine.Syntax.Formatting;
+namespace CompileEngine.Syntax.Formatting;
 
 public sealed class UnionExpression<TSymbol>: ProductionExpression<TSymbol> where TSymbol : notnull {
 

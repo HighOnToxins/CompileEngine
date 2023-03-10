@@ -1,10 +1,10 @@
 ﻿
-using ParseEngine.Scanning;
-using ParseEngine.Syntax.Formatting;
+using CompileEngine.Scanning;
+using CompileEngine.Syntax.Formatting;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
-namespace ParseEngine.Syntax;
+namespace CompileEngine.Syntax;
 
 public sealed class Grammar<TSymbol>: IEnumerable<KeyValuePair<TSymbol, ProductionExpression<TSymbol>>> where TSymbol : notnull {
 

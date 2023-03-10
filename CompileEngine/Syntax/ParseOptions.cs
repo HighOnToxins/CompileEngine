@@ -1,5 +1,5 @@
 ﻿
-namespace ParseEngine.Syntax;
+namespace CompileEngine.Syntax;
 
 public enum ParseOptions {
     LeftRight,

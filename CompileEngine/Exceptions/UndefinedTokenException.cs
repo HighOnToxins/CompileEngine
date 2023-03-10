@@ -1,5 +1,5 @@
 ﻿
-namespace ParseEngine.Exceptions;
+namespace CompileEngine.Exceptions;
 
 [Serializable]
 public sealed class UndefinedTokenException: CompileException {

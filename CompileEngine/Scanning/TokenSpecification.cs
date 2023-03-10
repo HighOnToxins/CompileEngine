@@ -1,7 +1,7 @@
 ﻿
 using System.Text.RegularExpressions;
 
-namespace ParseEngine.Scanning;
+namespace CompileEngine.Scanning;
 
 public class TokenSpecification {
 

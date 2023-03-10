@@ -1,9 +1,9 @@
 ﻿
-using ParseEngine.Exceptions;
-using ParseEngine.Scanning;
-using ParseEngine.Syntax.Formatting;
+using CompileEngine.Exceptions;
+using CompileEngine.Scanning;
+using CompileEngine.Syntax.Formatting;
 
-namespace ParseEngine.Syntax;
+namespace CompileEngine.Syntax;
 
 //Left-left (top-down) Parser
 internal sealed class Parser<TSymbol> where TSymbol : notnull {

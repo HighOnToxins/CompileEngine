@@ -1,5 +1,5 @@
-using ParseEngine.Scanning;
-using ParseEngine.Syntax;
+using CompileEngine.Scanning;
+using CompileEngine.Syntax;
 
 namespace ParseTesting;
 

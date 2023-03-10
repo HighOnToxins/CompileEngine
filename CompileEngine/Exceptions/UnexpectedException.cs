@@ -1,6 +1,6 @@
-﻿using ParseEngine.Exceptions;
+﻿using CompileEngine.Exceptions;
 
-namespace ParseEngine.Syntax.Formatting;
+namespace CompileEngine.Syntax.Formatting;
 
 [Serializable]
 internal class UnexpectedException: CompileException {

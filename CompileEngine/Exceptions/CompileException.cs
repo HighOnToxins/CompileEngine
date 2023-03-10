@@ -1,7 +1,7 @@
 ﻿
 using System.Runtime.Serialization;
 
-namespace ParseEngine.Exceptions;
+namespace CompileEngine.Exceptions;
 
 [Serializable]
 public abstract class CompileException: Exception {

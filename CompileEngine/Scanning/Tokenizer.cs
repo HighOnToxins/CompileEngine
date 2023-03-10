@@ -1,8 +1,8 @@
 ﻿
-using ParseEngine.Exceptions;
+using CompileEngine.Exceptions;
 using System.Collections;
 
-namespace ParseEngine.Scanning;
+namespace CompileEngine.Scanning;
 
 public sealed class Tokenizer<TSymbol>: IEnumerable<TokenSpecification> where TSymbol : notnull {
 

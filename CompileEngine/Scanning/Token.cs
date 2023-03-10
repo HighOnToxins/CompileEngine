@@ -1,4 +1,4 @@
-﻿namespace ParseEngine.Scanning;
+﻿namespace CompileEngine.Scanning;
 
 public class Token<TSymbol> where TSymbol : notnull {
     public TSymbol Category { get; private init; }

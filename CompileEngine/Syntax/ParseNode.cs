@@ -1,7 +1,7 @@
 ﻿
-using ParseEngine.Scanning;
+using CompileEngine.Scanning;
 
-namespace ParseEngine.Syntax;
+namespace CompileEngine.Syntax;
 
 public abstract class ParseNode<TSymbol> where TSymbol : notnull {
 
